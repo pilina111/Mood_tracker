@@ -12,10 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Mood_tracker">
         <activity
-            android:name=".Mood_History"
+            android:name=".AddActivity"
+
             android:exported="false" />
         <activity
-            android:name=".Calendar"
+            android:name=".Calendar_General"
+            android:label="Notes List"
+            android:parentActivityName=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".Mood_Tracker"
