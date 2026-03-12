@@ -1,5 +1,6 @@
 package com.example.mood_tracker;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -7,11 +8,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.content.Intent;
 
+import com.example.mood_tracker.DataBase.Database_Notes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -22,6 +25,12 @@ public class MainActivity extends AppCompatActivity {
 
     RecyclerView recycler_home;
     FloatingActionButton fab_add;
+
+    Database_Notes myDB;
+    ArrayList<String> note_id, date, title, text;
+CustomAdapter customAdapter;
+
+
 
 
     @Override
@@ -60,9 +69,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+ myDB = new Database_Notes(MainActivity.this);
+ note_id = new ArrayList<>();
+ date = new ArrayList<>();
+ title = new ArrayList<>();
+ text = new ArrayList<>();
 
+
+storeDataInArrays();
+customAdapter = new CustomAdapter(MainActivity.this, note_id, date, title, text);
+recycler_home.setAdapter(customAdapter);
+recycler_home.setLayoutManager(new LinearLayoutManager(MainActivity.this));
 
 
     }
+
+    void storeDataInArrays() {
+Cursor cursor = myDB.readAllData();
+if (cursor.getCount() == 0) {
+    Toast.makeText(this, "No data", Toast.LENGTH_SHORT).show();
+} else {
+while (cursor.moveToNext()) {
+    note_id.add(cursor.getString(0));
+    date.add(cursor.getString(1));
+    title.add(cursor.getString(2));
+    text.add(cursor.getString(3));
 }
+    }
+}
+
+    }
+
+
 

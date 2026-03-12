@@ -1,15 +1,15 @@
 package com.example.mood_tracker.DataBase;
 
 
+
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.content.Context;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
 
 import androidx.annotation.Nullable;
 
@@ -36,7 +36,7 @@ public class Database_Notes  extends SQLiteOpenHelper {
 
      String query =
              "CREATE TABLE " + TABLE_NAME +
-                     " (" + COLUMN_ID + "INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                     " (" + COLUMN_ID + "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                      COLUMN_DATE + " TEXT, " +
                      COLUMN_TITLE + " TEXT, " +
                      COLUMN_TEXT + " TEXT);";
@@ -52,24 +52,52 @@ public class Database_Notes  extends SQLiteOpenHelper {
 
     }
 
-    void addNote(String date, String title, String text) {
+    public void addNote(String date, String title, String text) {
 
-       SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-     cv.put(COLUMN_DATE, date);
-     cv.put(COLUMN_TITLE, title);
-     cv.put(COLUMN_TEXT, text);
+        cv.put(COLUMN_DATE, date);
+        cv.put(COLUMN_TITLE, title);
+        cv.put(COLUMN_TEXT, text);
 
-     long result = db.insert(TABLE_NAME, null, cv);
-     if (result == -1) {
-         Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
-     }
-     else {
-         Toast.makeText(context, "Added Successfully!", Toast.LENGTH_SHORT).show();
-     }
+        long result = db.insert(TABLE_NAME, null, cv);
+        if (result == -1) {
+            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Added Successfully!", Toast.LENGTH_SHORT).show();
+        }
 
     }
+     public Cursor readAllData(){
+
+         String query = "SELECT * FROM " + TABLE_NAME;
+         SQLiteDatabase db = this.getReadableDatabase();
+
+         Cursor cursor = null;
+         if (db != null) {
+
+           cursor =  db.rawQuery(query, null);
+         }
+         return cursor;
+        }
+
+        public void updateData(String row_id, String date, String title, String text) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put(COLUMN_DATE, date);
+            cv.put(COLUMN_TITLE, title);
+            cv.put(COLUMN_TEXT, text);
+
+long result = db.update(TABLE_NAME, cv, "id=?", new String[]{row_id});
+            if (result == -1) {
+                Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Updated Successfully!", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+
 }
 
 
